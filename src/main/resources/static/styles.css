@@ -1,0 +1,108 @@
+/* Style pour le champ de recherche */
+.search-bar {
+  margin-bottom: 20px;
+}
+
+.search-bar input[type="text"] {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+.search-bar button[type="submit"] {
+  background-color: #4caf50;
+  color: white;
+  padding: 10px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.search-bar button[type="submit"]:hover {
+  background-color: #45a049;
+}
+
+/* Styles pour la carte */
+/* Style pour chaque carte */
+.card {
+  width: 200px; /* Largeur fixe */
+  height: 500px; /* Hauteur fixe */
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin-right: 20px;
+  margin-bottom: 20px;
+  overflow: hidden; /* Pour cacher le débordement des propriétés */
+  display: flex; /* Utiliser flexbox pour aligner les éléments */
+  flex-direction: column; /* Aligner les éléments en colonne */
+}
+
+.card img {
+  width: 100%; /* Image prend la moitié de la largeur de la carte */
+  height: 50%; /* Image prend la moitié de la hauteur de la carte */
+}
+
+.card-content {
+  padding: 10px;
+  flex-grow: 1; /* Utilisation de tout l'espace disponible */
+  display: flex; /* Utiliser flexbox pour les propriétés */
+  flex-direction: column; /* Aligner les propriétés en colonne */
+}
+
+.card-property {
+  margin-bottom: 5px;
+}
+
+.classList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+/* Styles pour le formulaire d'ajout de carte */
+
+form {
+  max-width: 400px;
+  margin: 0 auto;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+}
+
+h1 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+input[type="text"],
+input[type="number"] {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box; /* Pour inclure le padding dans la largeur */
+}
+
+button[type="submit"] {
+  background-color: #4caf50; /* Couleur de fond du bouton */
+  color: white; /* Couleur du texte du bouton */
+  padding: 14px 20px; /* Espacement interne */
+  margin: 8px 0; /* Marge extérieure */
+  border: none; /* Supprimer la bordure */
+  border-radius: 4px; /* Coins arrondis */
+  cursor: pointer; /* Curseur de la souris lorsqu'on survole le bouton */
+  width: 100%; /* Le bouton prendra toute la largeur disponible */
+}
+
+button[type="submit"]:hover {
+  background-color: #45a049; /* Lorsque l'utilisateur survole le bouton */
+}
+
+/* Pour centrer le bouton */
+button[type="submit"] {
+  display: block;
+  margin: 0 auto;
+}
