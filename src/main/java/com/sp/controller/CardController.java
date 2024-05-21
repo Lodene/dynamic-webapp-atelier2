@@ -1,15 +1,19 @@
 package com.sp.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
 import com.sp.repo.CardRepository;
 import com.sp.model.Card;
+import com.sp.model.User;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -25,8 +29,8 @@ public class CardController {
         List<Card> cards = cardRepository.findAll();
         if (search != null && !search.isEmpty()) {
             cards = cards.stream()
-                         .filter(card -> card.getName().toLowerCase().contains(search.toLowerCase()))
-                         .collect(Collectors.toList());
+                    .filter(card -> card.getName().toLowerCase().contains(search.toLowerCase()))
+                    .collect(Collectors.toList());
         }
         model.addAttribute("cards", cards);
         return "index";
@@ -45,6 +49,7 @@ public class CardController {
         card.setDefense(75);
         card.setFamily("Une famille");
         card.setAffinity("Une affinité");
+        card.setPrice(100);
 
         model.addAttribute("card", card);
         return "addCardForm";
@@ -54,5 +59,34 @@ public class CardController {
     public String addCard(Card card, Model model) {
         cardRepository.save(card);
         return "redirect:/";
+    }
+
+    @GetMapping("/buy/{id}")
+    public ResponseEntity<String> buyCard(int id, User user) {
+        Card card = cardRepository.findById(id).orElse(null);
+        if (card != null) {
+            if (user.getMoney() > card.getPrice()) {
+                user.addCard(card);
+                user.setMoney(user.getMoney() - card.getPrice());
+                return ResponseEntity.ok("Card bought successfully.");
+            } else {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Not enough money to buy this card.");
+            }
+        }
+        return ResponseEntity.ok("Card bought successfully.");
+    }
+
+    @GetMapping("/sell/{id}")
+    public ResponseEntity<String> sellCard(int id, User user) {
+        Card card = cardRepository.findById(id).orElse(null);
+        if (card != null) {
+            if (!user.getCards().contains(card)) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You don't own this card.");
+            }
+            user.removeCard(card);
+            user.setMoney(user.getMoney() + card.getPrice());
+            return ResponseEntity.ok("Card sold successfully.");
+        }
+        return ResponseEntity.ok("Card sold successfully.");
     }
 }

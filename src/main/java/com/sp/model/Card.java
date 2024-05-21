@@ -19,6 +19,7 @@ public class Card {
     private Integer defense;
     private String family;
     private String affinity;
+    private Integer price;
 
     // Getters and Setters
 
@@ -100,6 +101,14 @@ public class Card {
 
     public void setAffinity(String affinity) {
         this.affinity = affinity;
+    }
+
+    public Integer getPrice() {
+        return price;
+    }
+
+    public void setPrice(Integer price) {
+        this.price = price;
     }
 
     // toString
