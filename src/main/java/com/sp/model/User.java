@@ -1,37 +1,45 @@
 package com.sp.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Table;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 
 @Entity
 @Table(name = "users")
 public class User {
-    private int id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     private String name;
     private String username;
     private int money;
     private String password;
+    @OneToMany
     private List<Card> cards;
 
     public User() {
     }
 
-    public User(int id, String name, String username, int money, String password, List<Card> cards) {
-        this.id = id;
+    public User(String name, String username, String password) {
+        this.id = newId();
         this.name = name;
         this.username = username;
-        this.money = money;
+        this.money = 500;
         this.password = password;
-        this.cards = cards;
     }
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -81,6 +89,10 @@ public class User {
 
     public void removeCard(Card card) {
         this.cards.remove(card);
+    }
+
+    public Long newId() {
+        return (long) (Math.random() * 1000000);
     }
 
 }

@@ -5,12 +5,15 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.PostMapping;
 
 import com.sp.repo.UserRepository;
 import com.sp.repo.CardRepository;
 import com.sp.model.User;
+import com.sp.dto.CreateUserRequest;
 import com.sp.model.Card;
 
 import java.util.Optional;
@@ -26,22 +29,25 @@ public class UserController {
     @Autowired
     private CardRepository cardRepository;
 
-    @GetMapping("/create-account")
-    public ResponseEntity<String> createUser(User user) {
+    @PostMapping("/create-account")
+    public ResponseEntity<String> createUser(@RequestBody CreateUserRequest request) {
         try {
-            List<Card> allCard = new ArrayList<Card>();
-            List<Integer> allId = new ArrayList<Integer>();
-            allCard = cardRepository.findAll();
+            User user = new User(request.getUsername(), request.getName(), request.getPassword());
+            List<Card> allCard = cardRepository.findAll();
+            List<Long> allId = new ArrayList<>();
             int lastId = allCard.size();
-            while (allId.size() < 6) {
-                int random = (int) (Math.random() * lastId);
+            int i = 0;
+            while (i < 5) {
+                long random = (long) (Math.random() * lastId);
                 if (!allId.contains(random)) {
                     allId.add(random);
+                    Card card = cardRepository.findById(random).orElse(null);
+                    if (card != null) {
+                        System.out.println(card.getName());
+                        user.addCard(card);
+                        i++;
+                    }
                 }
-            }
-            for (int id : allId) {
-                Card card = allCard.get(id);
-                user.addCard(card);
             }
             userRepo.save(user);
             return new ResponseEntity<>("Account created successfully.", HttpStatus.CREATED);
@@ -50,7 +56,7 @@ public class UserController {
         }
     }
 
-    @GetMapping("/login")
+    @PostMapping("/login")
     public ResponseEntity<String> login(@RequestParam String username, @RequestParam String password) {
         try {
             Optional<User> userData = userRepo.findByUsername(username);

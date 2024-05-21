@@ -9,7 +9,7 @@ import jakarta.persistence.Id;
 public class Card {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer id;
+    private Long id;
     private String description;
     private String name;
     private String imgUrl;
@@ -21,13 +21,21 @@ public class Card {
     private String affinity;
     private Integer price;
 
+    // Constructors
+    public Card() {
+    }
+
+    public Card(String name) {
+        this.name = name;
+    }
+
     // Getters and Setters
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

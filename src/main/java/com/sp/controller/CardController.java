@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 
 import com.sp.repo.CardRepository;
 import com.sp.model.Card;
@@ -62,7 +61,7 @@ public class CardController {
     }
 
     @GetMapping("/buy/{id}")
-    public ResponseEntity<String> buyCard(int id, User user) {
+    public ResponseEntity<String> buyCard(Long id, User user) {
         Card card = cardRepository.findById(id).orElse(null);
         if (card != null) {
             if (user.getMoney() > card.getPrice()) {
@@ -77,7 +76,7 @@ public class CardController {
     }
 
     @GetMapping("/sell/{id}")
-    public ResponseEntity<String> sellCard(int id, User user) {
+    public ResponseEntity<String> sellCard(Long id, User user) {
         Card card = cardRepository.findById(id).orElse(null);
         if (card != null) {
             if (!user.getCards().contains(card)) {
