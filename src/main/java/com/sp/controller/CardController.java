@@ -7,9 +7,12 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.http.HttpStatus;
 
+import com.sp.service.CardService;
+import com.sp.service.UserService;
 import com.sp.repo.CardRepository;
 import com.sp.model.Card;
 import com.sp.model.User;
@@ -17,51 +20,43 @@ import com.sp.model.User;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Controller
+@RestController
 @RequestMapping("/card")
 public class CardController {
     @Autowired
-    private CardRepository cardRepository;
+    CardService cardService;
 
-    @GetMapping
-    public String listCards(@RequestParam(value = "search", required = false) String search, Model model) {
-        List<Card> cards = cardRepository.findAll();
-        if (search != null && !search.isEmpty()) {
-            cards = cards.stream()
-                    .filter(card -> card.getName().toLowerCase().contains(search.toLowerCase()))
-                    .collect(Collectors.toList());
-        }
-        model.addAttribute("cards", cards);
-        return "index";
-    }
+    @Autowired
+    UserService userService;
+
+    // @GetMapping
+    // public String listCards(@RequestParam(value = "search", required = false)
+    // String search, Model model) {
+    // List<Card> cards = cardRepository.findAll();
+    // if (search != null && !search.isEmpty()) {
+    // cards = cards.stream()
+    // .filter(card -> card.getName().toLowerCase().contains(search.toLowerCase()))
+    // .collect(Collectors.toList());
+    // }
+    // model.addAttribute("cards", cards);
+    // return "index";
+    // }
 
     @GetMapping("/add")
-    public String showAddForm() {
-        Card card = new Card();
-        // Initialiser avec des valeurs par défaut
-        card.setName("Une carte");
-        card.setDescription("Une description");
-        card.setImgUrl("https://meme-gag.com/wp-content/uploads/2017/12/meme-14723.jpg");
-        card.setHp(100);
-        card.setEnergy(50);
-        card.setAttack(75);
-        card.setDefense(75);
-        card.setFamily("Une famille");
-        card.setAffinity("Une affinité");
-        card.setPrice(100);
-
-        return "addCardForm";
+    public Card showAddForm() {
+        return cardService.addCardDefault();
     }
 
-    @PostMapping("/add")
-    public String addCard(Card card, Model model) {
-        cardRepository.save(card);
-        return "redirect:/";
-    }
+    // @PostMapping("/add")
+    // public String addCard(Card card, Model model) {
+    // cardRepository.save(card);
+    // return "redirect:/";
+    // }
 
-    @GetMapping("/buy/{id}")
-    public ResponseEntity<String> buyCard(Long id, User user) {
-        Card card = cardRepository.findById(id).orElse(null);
+    @GetMapping("/buy/{id_card}/{id_user}")
+    public ResponseEntity<String> buyCard(Long id_card, Long id_user) {
+        Card card = cardService.findById(id_card);
+        User user = userService.getUser(id_user);
         if (card != null) {
             if (user.getMoney() > card.getPrice()) {
                 user.addCard(card);
@@ -74,9 +69,10 @@ public class CardController {
         return ResponseEntity.ok("Card bought successfully.");
     }
 
-    @GetMapping("/sell/{id}")
-    public ResponseEntity<String> sellCard(Long id, User user) {
-        Card card = cardRepository.findById(id).orElse(null);
+    @GetMapping("/sell/{id_card}/{id_user}")
+    public ResponseEntity<String> sellCard(Long id_card, Long id_user) {
+        Card card = cardService.findById(id_card);
+        User user = userService.getUser(id_user);
         if (card != null) {
             if (!user.getCards().contains(card)) {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You don't own this card.");

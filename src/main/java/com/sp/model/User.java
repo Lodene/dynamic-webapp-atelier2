@@ -22,7 +22,7 @@ public class User {
     private int money;
     private String password;
     @OneToMany
-    private List<Card> cards;
+    private List<Card> cards = new ArrayList<>();;
 
     public User() {
     }

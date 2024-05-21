@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.sp.service.CardService;
 import com.sp.service.UserService;
 
 import jakarta.servlet.http.HttpServletResponse;
@@ -27,6 +28,9 @@ public class UserController {
     @Autowired
     UserService userService;
 
+    @Autowired
+    CardService cardService;
+
     @RequestMapping(method = RequestMethod.POST, value = "/login", headers = "Content-Type=application/x-www-form-urlencoded")
     @ResponseStatus(HttpStatus.OK)
     public User login(@RequestParam String username, @RequestParam String password, HttpServletResponse response)
@@ -39,9 +43,12 @@ public class UserController {
     @RequestMapping(method = RequestMethod.PUT, value = "/create-account")
     @ResponseStatus(HttpStatus.CREATED)
     public User addUser(@RequestBody User user) {
-        user = userService.addUser(user);
-        // user = userService.addCardsInitial(user);
-        return user;
+        try {
+            user = userService.createUserWithInitialCards(user);
+            return user;
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     @GetMapping("/{id}")
@@ -54,8 +61,8 @@ public class UserController {
         }
     }
 
-    @GetMapping("/cards/{id}")
-    public Iterable<Card> getCard(@PathVariable Long id) {
-        return userService.getUser(id).getCards();
+    @GetMapping("/add_card_user/{id_card}/{id_user}")
+    public void addCard(@PathVariable Long id_card, @PathVariable Long id_user) {
+        userService.addCardtoUser(id_card, id_user);
     }
 }

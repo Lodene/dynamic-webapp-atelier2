@@ -33,4 +33,18 @@ public class CardService {
     public void deleteCard(Long id) {
         cRepository.deleteById(id);
     }
+
+    public Card addCardDefault() {
+        Card card = new Card();
+        card.setName("Default Card");
+        card.setPrice(100);
+        card.setAttack(10);
+        card.setDefense(10);
+        cRepository.save(card);
+        return card;
+    }
+
+    public Card findById(Long id) {
+        return cRepository.findById(id).orElse(null);
+    }
 }

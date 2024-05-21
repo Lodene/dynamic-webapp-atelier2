@@ -3,6 +3,7 @@ package com.sp.service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -43,24 +44,39 @@ public class UserService {
         return userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
     }
 
-    public User addCardsInitial(User user) {
-        List<Card> allCard = cardRepository.findAll();
-        List<Long> allId = new ArrayList<>();
-        int lastId = allCard.size();
-        int i = 0;
-        while (i < 5) {
-            long random = (long) (Math.random() * lastId);
-            if (!allId.contains(random)) {
-                allId.add(random);
-                Card card = cardRepository.findById(random).orElse(null);
-                if (card != null) {
-                    System.out.println(card.getName());
-                    user.addCard(card);
-                    i++;
-                }
+    public User createUserWithInitialCards(User user) {
+
+        user = userRepository.save(user);
+
+        // Assign initial cards to the user
+        List<Card> allCards = cardRepository.findAll();
+        int totalCards = allCards.size();
+
+        if (totalCards < 5) {
+            throw new IllegalArgumentException("Not enough cards available to assign to user");
+        }
+
+        List<Card> assignedCards = new ArrayList<>();
+        Random random = new Random();
+
+        while (assignedCards.size() < 5) {
+            int randomIndex = random.nextInt(totalCards);
+            Card card = allCards.get(randomIndex);
+
+            if (!assignedCards.contains(card)) {
+                assignedCards.add(card);
+                user.addCard(card);
             }
         }
-        userRepository.save(user);
+        // Save the user again with the assigned cards
+        user = userRepository.save(user);
         return user;
+    }
+
+    public void addCardtoUser(Long id_card, Long id_user) {
+        User user = userRepository.findById(id_user).orElseThrow(() -> new RuntimeException("User not found"));
+        Card card = cardRepository.findById(id_card).orElseThrow(() -> new RuntimeException("Card not found"));
+        user.addCard(card);
+        userRepository.save(user);
     }
 }
