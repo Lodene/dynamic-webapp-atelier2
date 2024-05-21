@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Controller
-@RequestMapping("/")
+@RequestMapping("/card")
 public class CardController {
     @Autowired
     private CardRepository cardRepository;
@@ -36,7 +36,7 @@ public class CardController {
     }
 
     @GetMapping("/add")
-    public String showAddForm(Model model) {
+    public String showAddForm() {
         Card card = new Card();
         // Initialiser avec des valeurs par défaut
         card.setName("Une carte");
@@ -50,7 +50,6 @@ public class CardController {
         card.setAffinity("Une affinité");
         card.setPrice(100);
 
-        model.addAttribute("card", card);
         return "addCardForm";
     }
 
