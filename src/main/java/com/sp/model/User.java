@@ -3,6 +3,8 @@ package com.sp.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -22,7 +24,8 @@ public class User {
     private int money;
     private String password;
     @OneToMany
-    private List<Card> cards = new ArrayList<>();;
+    @JsonManagedReference
+    private List<Card> cards = new ArrayList<>();
 
     public User() {
     }

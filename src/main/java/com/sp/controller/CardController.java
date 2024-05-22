@@ -50,35 +50,10 @@ public class CardController {
     }
 
     // a verif
-    // @PostMapping("/add")
-    // public String addCard(Card card, Model model) {
-    // cardRepository.save(card);
-    // return "redirect:/";
-    // }
-
-    // a verif
-    @GetMapping("/buy/{id_card}/{id_user}")
-    public User buyCard(@PathVariable Long id_card, @PathVariable Long id_user) {
-        System.out.println("id_card: " + id_card);
-        System.out.println("id_user: " + id_user);
-        userService.buyCard(id_card, id_user);
-        User user = userService.getUser(id_user);
-        return user;
+    @PostMapping("/add")
+    public Card addCard(Card card) {
+        cardService.addCard(card);
+        return card;
     }
 
-    // a verif
-    @GetMapping("/sell/{id_card}/{id_user}")
-    public ResponseEntity<String> sellCard(Long id_card, Long id_user) {
-        Card card = cardService.findById(id_card);
-        User user = userService.getUser(id_user);
-        if (card != null) {
-            if (!user.getCards().contains(card)) {
-                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You don't own this card.");
-            }
-            user.removeCard(card);
-            user.setMoney(user.getMoney() + card.getPrice());
-            return ResponseEntity.ok("Card sold successfully.");
-        }
-        return ResponseEntity.ok("Card sold successfully.");
-    }
 }

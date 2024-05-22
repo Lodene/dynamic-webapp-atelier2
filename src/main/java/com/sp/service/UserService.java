@@ -1,9 +1,11 @@
 package com.sp.service;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -27,7 +29,6 @@ public class UserService {
     CardRepository cardRepository;
 
     public User addUser(User user) {
-        user.setMoney(500);
         userRepository.save(user);
         return user;
     }
@@ -55,26 +56,30 @@ public class UserService {
         if (user.getMoney() != 500) {
             user.setMoney(500);
         }
-        user = userRepository.save(user);
+        user = userRepository.save(user); // Sauvegarder l'utilisateur avant de lui attribuer des cartes
 
-        // Assign initial cards to the user
-        List<Card> allCards = cardRepository.findAll();
+        // Assigner les cartes initiales à l'utilisateur
+        List<Card> allCards = cardRepository.findByUserIsNull();
         int totalCards = allCards.size();
         System.out.println("Total cards: " + totalCards);
-        if (totalCards > 5) {
-            List<Card> assignedCards = new ArrayList<>();
+
+        if (totalCards > 0) {
+            Set<Card> assignedCards = new HashSet<>();
             Random random = new Random();
 
-            while (assignedCards.size() < 5) {
+            while (assignedCards.size() < 5 && assignedCards.size() < totalCards) {
                 int randomIndex = random.nextInt(totalCards);
                 Card card = allCards.get(randomIndex);
 
-                if (!assignedCards.contains(card) && !user.getCards().contains(card)) {
+                // S'assurer que la carte n'est pas déjà attribuée
+                if (card.getUser() == null) {
                     assignedCards.add(card);
                     user.addCard(card);
+                    card.setUser(user);
+                    cardRepository.save(card);
                 }
             }
-            // Save the user again with the assigned cards
+            // Sauvegarder l'utilisateur avec les cartes attribuées
             user = userRepository.save(user);
         }
 
@@ -84,8 +89,14 @@ public class UserService {
     public void addCardtoUser(Long id_card, Long id_user) {
         User user = userRepository.findById(id_user).orElseThrow(() -> new RuntimeException("User not found"));
         Card card = cardRepository.findById(id_card).orElseThrow(() -> new RuntimeException("Card not found"));
-        user.addCard(card);
-        userRepository.save(user);
+        if (card.getUser() == null) {
+            user.addCard(card);
+            card.setUser(user);
+            userRepository.save(user);
+            return;
+        }
+        throw new RuntimeException("Card already owned by another user.");
+
     }
 
     public ResponseEntity<String> buyCard(Long id_card, Long id_user) {
@@ -95,8 +106,19 @@ public class UserService {
         }
 
         User user = userRepository.findById(id_user).orElseThrow(() -> new RuntimeException("User not found"));
+
+        System.out.println("Card: " + card.getUser());
+        if (card.getUser() != null) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Card already owned by another user.");
+        }
+
+        if (card.getPrice() == null) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Card price not set.");
+        }
+
         if (user.getMoney() > card.getPrice()) {
             user.addCard(card);
+            card.setUser(user);
             user.setMoney(user.getMoney() - card.getPrice());
             userRepository.save(user);
             return ResponseEntity.ok("Card bought successfully.");

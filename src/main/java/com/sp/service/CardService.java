@@ -48,4 +48,9 @@ public class CardService {
         return cRepository.findById(id).orElse(null);
     }
 
+    public Card addCard(Card card) {
+        cRepository.save(card);
+        return card;
+    }
+
 }

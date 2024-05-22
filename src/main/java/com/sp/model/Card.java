@@ -5,11 +5,16 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 
 @Entity
 public class Card {
@@ -26,6 +31,10 @@ public class Card {
     private String family;
     private String affinity;
     private Integer price;
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = true)
+    @JsonBackReference
+    private User user;
 
     // Constructors
     public Card() {
@@ -33,6 +42,7 @@ public class Card {
 
     public Card(String name) {
         this.name = name;
+        this.user = null;
     }
 
     // Getters and Setters
@@ -123,6 +133,18 @@ public class Card {
 
     public void setPrice(Integer price) {
         this.price = price;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public void removeUser() {
+        this.user = null;
     }
 
     // toString
