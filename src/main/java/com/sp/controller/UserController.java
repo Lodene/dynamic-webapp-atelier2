@@ -31,11 +31,11 @@ public class UserController {
     @Autowired
     CardService cardService;
 
-    @RequestMapping(method = RequestMethod.POST, value = "/login", headers = "Content-Type=application/x-www-form-urlencoded")
+    @RequestMapping(method = RequestMethod.POST, value = "/login")
     @ResponseStatus(HttpStatus.OK)
-    public User login(@RequestParam String username, @RequestParam String password, HttpServletResponse response)
+    public User login(@RequestBody User userParam)
             throws IOException {
-        Long userId = userService.login(username, password);
+        Long userId = userService.login(userParam.getUsername(), userParam.getPassword());
         User user = userService.getUser(userId);
         return user;
     }
@@ -62,7 +62,9 @@ public class UserController {
     }
 
     @GetMapping("/add_card_user/{id_card}/{id_user}")
-    public void addCard(@PathVariable Long id_card, @PathVariable Long id_user) {
+    public User addCard(@PathVariable Long id_card, @PathVariable Long id_user) {
         userService.addCardtoUser(id_card, id_user);
+        return userService.getUser(id_user);
+
     }
 }

@@ -47,4 +47,5 @@ public class CardService {
     public Card findById(Long id) {
         return cRepository.findById(id).orElse(null);
     }
+
 }

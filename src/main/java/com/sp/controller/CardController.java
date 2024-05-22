@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -29,6 +30,7 @@ public class CardController {
     @Autowired
     UserService userService;
 
+    // a verif
     // @GetMapping
     // public String listCards(@RequestParam(value = "search", required = false)
     // String search, Model model) {
@@ -47,28 +49,24 @@ public class CardController {
         return cardService.addCardDefault();
     }
 
+    // a verif
     // @PostMapping("/add")
     // public String addCard(Card card, Model model) {
     // cardRepository.save(card);
     // return "redirect:/";
     // }
 
+    // a verif
     @GetMapping("/buy/{id_card}/{id_user}")
-    public ResponseEntity<String> buyCard(Long id_card, Long id_user) {
-        Card card = cardService.findById(id_card);
+    public User buyCard(@PathVariable Long id_card, @PathVariable Long id_user) {
+        System.out.println("id_card: " + id_card);
+        System.out.println("id_user: " + id_user);
+        userService.buyCard(id_card, id_user);
         User user = userService.getUser(id_user);
-        if (card != null) {
-            if (user.getMoney() > card.getPrice()) {
-                user.addCard(card);
-                user.setMoney(user.getMoney() - card.getPrice());
-                return ResponseEntity.ok("Card bought successfully.");
-            } else {
-                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Not enough money to buy this card.");
-            }
-        }
-        return ResponseEntity.ok("Card bought successfully.");
+        return user;
     }
 
+    // a verif
     @GetMapping("/sell/{id_card}/{id_user}")
     public ResponseEntity<String> sellCard(Long id_card, Long id_user) {
         Card card = cardService.findById(id_card);
