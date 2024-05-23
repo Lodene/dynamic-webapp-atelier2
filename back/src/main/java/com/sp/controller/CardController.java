@@ -84,7 +84,7 @@ public class CardController {
     }
 
 
-    @GetMapping("all")
+    @GetMapping("/all")
 	public Iterable<Card> getCards() {
 		return cardService.getAll();
 	}
