@@ -14,7 +14,7 @@ $(document).ready(function() {
             success: function(result) {
                 console.log(result);
                 // Stockage du JWT dans le sessionStorage
-                sessionStorage.setItem("jwt", result.jwt);
+                sessionStorage.setItem("jwtToken", result.jwt);
                 alert('Vous êtes bien connecté');
                 // Redirection vers une nouvelle page après la connexion
                 window.location.replace("./cardList.html");

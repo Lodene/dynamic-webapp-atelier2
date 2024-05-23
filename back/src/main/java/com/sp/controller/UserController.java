@@ -1,6 +1,7 @@
 package com.sp.controller;
 
 import java.io.IOException;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -13,10 +14,15 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.sp.model.Card;
 import com.sp.model.User;
 import com.sp.service.CardService;
 import com.sp.service.UserService;
 import com.sp.utils.JwtUtil;
+
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import jakarta.servlet.http.HttpServletRequest;
 
 @RestController
 @RequestMapping("/user")
@@ -27,6 +33,7 @@ public class UserController {
 
     @Autowired
     CardService cardService;
+    
 
     @Autowired
     JwtUtil jwtUtil;
@@ -69,6 +76,16 @@ public class UserController {
     public User addCard(@PathVariable Long id_card, @PathVariable Long id_user) {
         userService.addCardtoUser(id_card, id_user);
         return userService.getUser(id_user);
+    }
+    
+    @GetMapping("/cards")
+    public ResponseEntity<List<Card>> getUserCards(HttpServletRequest request) {
+        String token = request.getHeader("Authorization").replace("Bearer ", "");
+        Claims claims = Jwts.parser().setSigningKey("your_secret_key").parseClaimsJws(token).getBody();
+        String username = claims.getSubject();
+        System.out.println(username);
+        List<Card> cards = cardService.getCardsByUsername(username);
+        return ResponseEntity.ok(cards);
     }
 }
 

@@ -21,8 +21,8 @@ public class User {
     private String username;
     private int money;
     private String password;
-    @OneToMany
-    private List<Card> cards = new ArrayList<>();;
+    @OneToMany(mappedBy="user")
+    private List<Card> cards;
 
     public User() {
     }

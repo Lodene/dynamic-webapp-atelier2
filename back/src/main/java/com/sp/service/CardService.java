@@ -1,17 +1,22 @@
 package com.sp.service;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.sp.model.Card;
+import com.sp.model.User;
 import com.sp.repo.CardRepository;
+import com.sp.repo.UserRepository;
 
 @Service
 public class CardService {
     @Autowired
     CardRepository cRepository;
+    @Autowired
+    UserRepository userRepository;
 
     public Iterable<Card> getAll() {
         return cRepository.findAll();
@@ -46,6 +51,12 @@ public class CardService {
 
     public Card findById(Long id) {
         return cRepository.findById(id).orElse(null);
+    }
+    
+
+    public List<Card> getCardsByUsername(String username) {
+        User user = userRepository.findByUsername(username).orElse(null);
+        return cRepository.findByUser(user);
     }
 
 }
