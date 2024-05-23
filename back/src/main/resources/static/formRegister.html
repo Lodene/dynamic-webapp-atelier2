@@ -10,7 +10,7 @@
     />
 
     <!-- Site Properties -->
-    <title>Grid Example - Semantic</title>
+    <title>Register - Semantic</title>
 
     <link
       rel="stylesheet"
@@ -26,17 +26,27 @@
       <div class="column"></div>
       <div class="column"></div>
       <div class="column">
-        <form class="ui form" action="/api/login" method="POST">
-          <h3 class="ui dividing header">Connect</h3>
+        <form class="ui form" action="./" method="POST">
+          <h3 class="ui dividing header">Register</h3>
           <div class="field">
-            <label>User name</label> <input type="text" name="username" />
+            <label>User name</label>
+            <input type="text" id="username" name="username" />
           </div>
           <div class="field">
-            <label>Password</label> <input type="text" name="password" />
+            <label>Password</label>
+            <input type="password" id="password" name="password" />
           </div>
-          <button class="ui button" type="submit">Connect</button>
+          <div class="field">
+            <label>Name</label>
+            <input type="text" id="name" name="name" />
+          </div>
+          <button class="ui button" id="registerSubmit" type="submit">
+            Register
+          </button>
         </form>
       </div>
     </div>
   </body>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="./js/register.js"></script>
 </html>
