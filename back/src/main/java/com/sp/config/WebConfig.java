@@ -17,7 +17,8 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(jwtFilter)
-                .addPathPatterns("/protected-endpoint/**"); // Protégez les endpoints nécessaires
+                .addPathPatterns("/**")
+                .excludePathPatterns("/auth/login", "/user/new");
     }
     @Override
     public void addCorsMappings(CorsRegistry registry) {

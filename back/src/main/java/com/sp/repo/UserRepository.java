@@ -2,7 +2,6 @@ package com.sp.repo;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import com.sp.model.User;
-import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 

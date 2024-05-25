@@ -106,3 +106,14 @@ button[type="submit"] {
   display: block;
   margin: 0 auto;
 }
+
+.logout-button {
+  background-color: #f8d7da; /* Pale red background */
+  color: #721c24; /* Dark red text */
+  border: 1px solid #f5c6cb; /* Border similar to background */
+}
+
+.logout-button:hover {
+  background-color: #f5c6cb; /* Slightly darker pale red on hover */
+  color: #721c24; /* Keep the text dark red on hover */
+}

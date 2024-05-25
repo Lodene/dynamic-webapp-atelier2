@@ -10,7 +10,5 @@ import com.sp.model.User;
 
 @Repository
 public interface CardRepository extends JpaRepository<Card, Long> {
-	
-
 	List<Card> findByUser(User user);
     }

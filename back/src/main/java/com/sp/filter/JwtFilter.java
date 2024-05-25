@@ -1,7 +1,6 @@
 package com.sp.filter;
 
 import com.sp.utils.JwtUtil;
-import io.jsonwebtoken.JwtException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -18,7 +17,12 @@ public class JwtFilter implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         final String authorizationHeader = request.getHeader("Authorization");
 
+        // Log des informations sur la requête entrante
+        System.out.println("Incoming request: " + request.getRequestURI());
+        System.out.println("Authorization header: " + authorizationHeader);
+
         if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
+            // Si le token JWT est manquant ou invalide, renvoyer une erreur non autorisée
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             return false;
         }
@@ -28,10 +32,12 @@ public class JwtFilter implements HandlerInterceptor {
             if (jwtUtil.validateToken(token)) {
                 return true;
             } else {
+                // Si le token JWT est invalide, renvoyer une erreur non autorisée
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 return false;
             }
-        } catch (JwtException e) {
+        } catch (Exception e) {
+            // En cas d'erreur lors de la validation du token JWT, renvoyer une erreur non autorisée
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             return false;
         }

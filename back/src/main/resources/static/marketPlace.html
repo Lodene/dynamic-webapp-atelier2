@@ -29,14 +29,18 @@
           <div class="sub header"><span id="money">{{money}}</span>$</div>
         </div>
       </h3>
+      <button
+        id="logoutButtonId"
+        class="ui right floated button logout-button"
+        style="margin-right: 20px"
+      >
+        Logout
+      </button>
 
-      <h3 class="ui left floated header">
-        <i class="money icon"></i>
-        <div class="content">
-          Buy
-          <div class="sub header">Choose some cards</div>
-        </div>
-      </h3>
+      <div class="ui left floated header">
+        <a href="/cardList.html" class="ui button">My cards</a>
+        <a href="/marketPlace.html" class="ui button">Market</a>
+      </div>
     </div>
 
     <div class="ui grid">
@@ -126,7 +130,7 @@
       </div>
     </div>
 
-    <script src="./lib/jquery-3.3.1.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="./lib/Semantic-UI-CSS-master/semantic.js"></script>
     <script src="./js/marketPlace.js"></script>
   </body>

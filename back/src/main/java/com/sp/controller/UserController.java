@@ -1,13 +1,11 @@
 package com.sp.controller;
 
-import java.io.IOException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -19,6 +17,7 @@ import com.sp.model.User;
 import com.sp.service.CardService;
 import com.sp.service.UserService;
 import com.sp.utils.JwtUtil;
+import com.sp.utils.RequestUtil;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -34,24 +33,13 @@ public class UserController {
     @Autowired
     CardService cardService;
     
-
     @Autowired
     JwtUtil jwtUtil;
 
-    @RequestMapping(method = RequestMethod.POST, value = "/login")
-    @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<?> login(@RequestBody User userParam) {
-        try {
-            Long userId = userService.login(userParam.getUsername(), userParam.getPassword());
-            User user = userService.getUser(userId);
-            final String jwt = jwtUtil.generateToken(user.getUsername());
-            return ResponseEntity.ok(new AuthenticationResponse(jwt));
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
-        }
-    }
+    @Autowired
+    RequestUtil requestUtil;
 
-    @RequestMapping(method = RequestMethod.PUT, value = "/create-account")
+    @RequestMapping(method = RequestMethod.PUT, value = "/new")
     @ResponseStatus(HttpStatus.CREATED)
     public User addUser(@RequestBody User user) {
         try {
@@ -62,21 +50,18 @@ public class UserController {
         }
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<User> getUser(@PathVariable Long id) {
+    @GetMapping("/me")
+    public ResponseEntity<User> getMe(HttpServletRequest request) {
+		Long userId = requestUtil.getUserId(request);
+        System.out.println("userId: " + userId);
         try {
-            User user = userService.getUser(id);
+            User user = userService.getUser(userId);
             return new ResponseEntity<>(user, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-    }
 
-    @GetMapping("/add_card_user/{id_card}/{id_user}")
-    public User addCard(@PathVariable Long id_card, @PathVariable Long id_user) {
-        userService.addCardtoUser(id_card, id_user);
-        return userService.getUser(id_user);
-    }
+	}
     
     @GetMapping("/cards")
     public ResponseEntity<List<Card>> getUserCards(HttpServletRequest request) {
@@ -89,14 +74,3 @@ public class UserController {
     }
 }
 
-class AuthenticationResponse {
-    private final String jwt;
-
-    public AuthenticationResponse(String jwt) {
-        this.jwt = jwt;
-    }
-
-    public String getJwt() {
-        return jwt;
-    }
-}

@@ -1,14 +1,14 @@
 package com.sp.model;
 
-import java.util.ArrayList;
 import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Table;
 import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 
 @Entity
@@ -19,8 +19,10 @@ public class User {
     private Long id;
     private String name;
     private String username;
-    private int money;
+    private double money;
     private String password;
+
+    @JsonManagedReference
     @OneToMany(mappedBy="user")
     private List<Card> cards;
 
@@ -30,7 +32,7 @@ public class User {
     public User(String username, String password) {
         this.id = newId();
         this.username = username;
-        this.money = 500;
+        this.money = 500.00;
         this.password = password;
     }
 
@@ -58,11 +60,11 @@ public class User {
         this.username = username;
     }
 
-    public int getMoney() {
+    public double getMoney() {
         return money;
     }
 
-    public void setMoney(int money) {
+    public void setMoney(double money) {
         this.money = money;
     }
 

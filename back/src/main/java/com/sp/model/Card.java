@@ -1,16 +1,12 @@
 package com.sp.model;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 
 @Entity
@@ -28,6 +24,8 @@ public class Card {
     private String family;
     private String affinity;
     private Integer price;
+
+    @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
@@ -128,6 +126,14 @@ public class Card {
 
     public void setPrice(Integer price) {
         this.price = price;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     // toString
